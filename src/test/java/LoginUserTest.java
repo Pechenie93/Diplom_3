@@ -13,7 +13,7 @@ public class LoginUserTest extends BaseMethods { // класс LoginUserTest - �
 
     @Test
     @DisplayName("Вход по кнопке «Войти в аккаунт» на главной") // имя теста
-    public void LoginOnEnterAccountButton() {
+    public void loginOnEnterAccountButton() {
         // Создай объект класса Главной страницы
         MainPage mainPage = new MainPage(getDriver());
         mainPage.clickOnEnterAccountButton();
@@ -28,7 +28,7 @@ public class LoginUserTest extends BaseMethods { // класс LoginUserTest - �
 
     @Test
     @DisplayName("Вход через кнопку «Личный кабинет»")
-    public void LoginOnClickPersonalArea() {
+    public void loginOnClickPersonalArea() {
         MainPage mainPage = new MainPage(getDriver());
         mainPage.clickOnPersonalArea();
         LoginPage loginPage = new LoginPage(getDriver());
@@ -40,7 +40,7 @@ public class LoginUserTest extends BaseMethods { // класс LoginUserTest - �
 
     @Test
     @DisplayName("Вход через кнопку в форме регистрации")
-    public void LoginOnClickEnterButtonOnRegistrationPage() {
+    public void loginOnClickEnterButtonOnRegistrationPage() {
         MainPage mainPage = new MainPage(getDriver());
         mainPage.clickOnPersonalArea();
         LoginPage loginPage = new LoginPage(getDriver());
@@ -55,7 +55,7 @@ public class LoginUserTest extends BaseMethods { // класс LoginUserTest - �
 
     @Test
     @DisplayName("Вход через кнопку в форме восстановления пароля")
-    public void LoginOnForgotPasswordPage() {
+    public void loginOnForgotPasswordPage() {
         MainPage mainPage = new MainPage(getDriver());
         mainPage.clickOnPersonalArea();
         LoginPage loginPage = new LoginPage(getDriver());
