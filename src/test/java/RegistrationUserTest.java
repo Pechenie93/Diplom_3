@@ -1,7 +1,9 @@
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import org.example.pages.LoginPage;
 import org.example.pages.MainPage;
 import org.example.pages.RegistrationPage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +28,7 @@ public class RegistrationUserTest extends BaseMethods { // класс Registrati
 
     @Test
     @DisplayName("Ошибка для некорректного пароля. Минимальный пароль — шесть символов")
-    public void registrationUserWithIncorrectPassword(){
+    public void registrationUserWithIncorrectPassword() {
         MainPage mainPage = new MainPage(getDriver());
         mainPage.clickOnPersonalArea();
         LoginPage loginPage = new LoginPage(getDriver());
@@ -34,6 +36,15 @@ public class RegistrationUserTest extends BaseMethods { // класс Registrati
         RegistrationPage registerPage = new RegistrationPage(getDriver());
         registerPage.registrationNewUser(getName(), getEmail(), getIncorrectPassword());
         Assert.assertTrue(getDriver().findElement(registerPage.getIncorrectPassword()).isDisplayed());
+    }
+
+    @After
+    public void cleanUpAfterRegistrationUserWithIncorrectPassword() {
+        Response response = getUser().loginUser(getUserLogin());
+        if (response.jsonPath().get("success").equals(true)) {
+            getUser().logoutUser(response.jsonPath().get("accessToken"));
+            getUser().deleteUser(response.jsonPath().get("accessToken"));
+        }
     }
 
 }
