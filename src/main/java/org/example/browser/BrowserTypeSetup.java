@@ -4,28 +4,44 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import static org.openqa.selenium.remote.Browser.CHROME;
+public class BrowserTypeSetup {
 
+    private static final String BROWSER_PROPERTY = "browser"; // имя свойства для выбора браузера
 
-public class BrowserTypeSetup { // класс настройки типа браузера BrowserTypeSetup
+    private static final String DEFAULT_BROWSER = "chrome"; // браузер по умолчанию
 
-    private final static Browser CURRENT_BROWSER = Browser.CHROME; // выбираем какой браузер запускать CHROME или YANDEX
     private static final ChromeOptions options = new ChromeOptions();
 
-    public static WebDriver browserDriverSetUp(){
+    public static WebDriver browserDriverSetUp() {
         WebDriver driver = null;
+        String browserType = getBrowserType(); // получаем выбранный тип браузера
+
         options.addArguments("--remote-allow-origins=*");
-        switch (CURRENT_BROWSER) {
-            case YANDEX:
+
+        switch (browserType) {
+            case "yandex":
                 System.setProperty("webdriver.chrome.driver", "/Users/light/Downloads/yandexdriver.exe");
                 driver = new ChromeDriver(options);
                 break;
-            case CHROME:
-                options.addArguments("--remote-allow-origins=*");
+            case "chrome":
                 driver = new ChromeDriver(options);
                 break;
+            default:
+                throw new IllegalArgumentException("Invalid browser type: " + browserType);
         }
         return driver;
     }
 
+    private static String getBrowserType() {
+        // Проверяем наличие системной проперти или переменной окружения для выбора браузера
+        String browserType = System.getProperty(BROWSER_PROPERTY);
+        if (browserType == null) {
+            browserType = System.getenv(BROWSER_PROPERTY);
+        }
+        if (browserType == null) {
+            // Если системная проперти или переменная окружения не указаны, используем значение по умолчанию
+            browserType = DEFAULT_BROWSER;
+        }
+        return browserType.toLowerCase(); // возвращаем значение в нижнем регистре
+    }
 }
