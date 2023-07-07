@@ -21,9 +21,9 @@ public class BaseMethods {
 
 
 
-    private WebDriver driver;
-    private final User user = new User();
-    private final UserRegistration userRegistration = new UserRegistration(email, password, name);
+    public WebDriver driver;
+    public final User user = new User();
+    public final UserRegistration userRegistration = new UserRegistration(email, password, name);
     private final UserLogin userLogin = new UserLogin(email, password);
     private final UserLogin loginIncorrectUser = new UserLogin(email, incorrectPassword);
 

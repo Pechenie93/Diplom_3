@@ -7,23 +7,27 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-
-public class RegistrationUserTest extends BaseMethods { // класс RegistrationUserTest - наследник класса BaseMethods
+public class RegistrationUserTest extends BaseMethods {
 
     @Test
     @DisplayName("Успешная регистрация") // имя теста
     public void registrationUserSuccess() {
-        // Создай объект класса Главной страницы
         MainPage mainPage = new MainPage(getDriver());
         mainPage.clickOnPersonalArea();
-        // Создай объект класса страницы Авторизации
+
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.clickOnRegistrationLink();
-        // Создай объект класса страницы Регистрации
+
         RegistrationPage registerPage = new RegistrationPage(getDriver());
-        // Регистрация нового пользователя
         registerPage.registrationNewUser(getName(), getEmail(), getPassword());
+
         Assert.assertTrue(getDriver().findElement(loginPage.getEnterHeader()).isDisplayed());
+
+        // Сохранение токена доступа в локальную переменную accessToken
+        Response response = getUser().registrationUser(getUserRegistration());
+        String accessToken = response.jsonPath().getString("accessToken");
+
+        // Другие действия, использующие accessToken
     }
 
     @Test
@@ -31,20 +35,34 @@ public class RegistrationUserTest extends BaseMethods { // класс Registrati
     public void registrationUserWithIncorrectPassword() {
         MainPage mainPage = new MainPage(getDriver());
         mainPage.clickOnPersonalArea();
+
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.clickOnRegistrationLink();
+
         RegistrationPage registerPage = new RegistrationPage(getDriver());
         registerPage.registrationNewUser(getName(), getEmail(), getIncorrectPassword());
+
         Assert.assertTrue(getDriver().findElement(registerPage.getIncorrectPassword()).isDisplayed());
     }
 
     @After
-    public void cleanUpAfterRegistrationUserWithIncorrectPassword() {
+    public void tearDown() {
         Response response = getUser().loginUser(getUserLogin());
-        if (response.jsonPath().get("success").equals(true)) {
-            getUser().logoutUser(response.jsonPath().get("accessToken"));
-            getUser().deleteUser(response.jsonPath().get("accessToken"));
-        }
-    }
+        String accessToken = response.jsonPath().getString("accessToken");
 
+        if (response.jsonPath().getBoolean("success")) {
+            getUser().logoutUser(accessToken);
+            getUser().deleteUser(accessToken);
+        }
+
+        response = getUser().loginUser(getLoginIncorrectUser());
+        accessToken = response.jsonPath().getString("accessToken");
+
+        if (response.jsonPath().getBoolean("success")) {
+            getUser().logoutUser(accessToken);
+            getUser().deleteUser(accessToken);
+        }
+
+        getDriver().quit();
+    }
 }
